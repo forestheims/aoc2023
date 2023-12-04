@@ -244,7 +244,7 @@ end
 function iterate_through_data(arr)
 	x = []
 	numbers = []
-	gear_ratios = []
+	gear_ratios = [0]
 	for i in 1:length(arr)
 		for j in 1:length(arr[i])
 			if is_number(i, j)
@@ -267,9 +267,11 @@ function iterate_through_data(arr)
 			end
 			################## Part 2 #############################
 			if arr[i][j] == "*"
+				# if it's a gear
 				gear_surrounding = check_surroundings(i, j)
 				numbers_surrounding_gear = []
 				for each in gear_surrounding
+					# check all surrounding elements for numbers
 					xy = split(each, ",")
 					xs = xy[1]
 					ys = xy[2]
@@ -278,15 +280,61 @@ function iterate_through_data(arr)
 					else
 						isnumber = is_number(xs, ys)
 						if isnumber
+							# if one of those surrounding elements is a number
 							push!(numbers_surounding_gear, "$xs,$ys")
+							# add it to a list
 						end
 					end
-					# accumulate the entire number sequence
-					# - find surrounding numbers
-					# - concatenate
 				end
 				# find out IF exactly two number sequences touch the gear
-				# if so multiply the two and add the "gear ratio" to gear_ratio array
+				if length(numbers_surrounding_gear) == 0 || length(numbers_surrounding_gear) == 1
+					# move on
+				else
+					parts_touching_gear = 0
+					nsg_split = []
+					for each in numbers_surrounding_gear
+						push!(nsg_split, split(each, ","))
+					end
+					if length(numbers_surrounding_gear) == 2
+						nsg_split = []
+						for each in numbers_surrounding_gear
+							push!(nsg_split, split(each, ","))
+						end
+						if nsg_split[1][1] == nsg_split[2][1]
+							# if they are in the same row
+							if parse(Int, nsg_split[1][1]) == i
+								# and if they are on either side of the gear
+								parts_touching_gear =+ 2
+							else
+								# check for a space between columns
+								space = abs(parse(Int, nsg_split[1][2]) - parse(Int, nsg_split[2][2]))
+								if space == 2
+									parts_touching_gear =+ 2
+								end
+							end
+						else
+							# they are in two different rows, so must be separate
+							parts_touching_gear =+ 2
+						end
+					else
+						
+						# its three or more chars touching gear. find out if it is actually two numbers
+						check_more_than_two = 0
+						if check_more_than_two == 2
+							parts_touching_gear =+ 2
+						end
+					end
+					# do fancy stuff here
+					if parts_touching_gear == 2
+						# - concatenate adjacent numbers
+						part_one = []
+						part_two = []
+						# more fancy stuff here
+						gear_ratio = parse(Int, join(part_one)) * parse(Int, join(part_two))
+						# - multiply the two and add the "gear ratio" to gear_ratios array
+						push!(gear_ratios, gear_ratio)
+					end
+				end
 			end
 			################### end Part 2 ##########################
 			push!(x, "$i,$j")
@@ -304,13 +352,20 @@ function iterate_through_data(arr)
 end
 
 # ╔═╡ 15062ef7-55c8-4220-b067-1aa0e34bdb28
-sum(iterate_through_data(twoddata)[1])
+begin
+	parts = iterate_through_data(twoddata)
+	part1 = sum(parts[1])	
+end
 # 531561 is correct! success on first attempt
+
+# ╔═╡ ce75fda9-4219-49d4-9587-0b6f8a3e96d7
+part2 = sum(parts[2])
 
 # ╔═╡ b637bbc8-e92e-4d21-ae09-401a18216475
 println(twoddata)
 
 # ╔═╡ Cell order:
+# ╠═ce75fda9-4219-49d4-9587-0b6f8a3e96d7
 # ╠═15062ef7-55c8-4220-b067-1aa0e34bdb28
 # ╠═24d0b901-cc34-4f61-8bad-67676e68a49e
 # ╠═24ee78dc-706b-4b37-ac1f-9190777542c1
