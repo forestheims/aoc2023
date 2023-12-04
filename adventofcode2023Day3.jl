@@ -22,6 +22,24 @@ end
 # testing function - should return array of numbers that are valid
 # iterate_through_data(twoddata)
 
+# ╔═╡ 82307a84-4ec5-434f-af4d-8beb39462d54
+function determine_parts_number(arr)
+	parts = []
+	for each in arr
+		#
+	end
+	return length(parts)
+end
+
+# ╔═╡ e8cdc687-9aa4-4d80-b6ef-90aa431df2e7
+function find_adjacent_numbers(arr)
+	parts = []
+	for each in arr
+		#
+	end
+	return parts
+end
+
 # ╔═╡ 3da43b43-ef54-48fa-b13f-82762035c05f
 # returns an array of comma separated 2d array indexes of surrounding elements
 function check_surroundings(x, y)
@@ -265,11 +283,13 @@ function iterate_through_data(arr)
 					end
 				end
 			end
+			
 			################## Part 2 #############################
 			if arr[i][j] == "*"
 				# if it's a gear
 				gear_surrounding = check_surroundings(i, j)
 				numbers_surrounding_gear = []
+				
 				for each in gear_surrounding
 					# check all surrounding elements for numbers
 					xy = split(each, ",")
@@ -286,6 +306,7 @@ function iterate_through_data(arr)
 						end
 					end
 				end
+				
 				# find out IF exactly two number sequences touch the gear
 				if length(numbers_surrounding_gear) == 0 || length(numbers_surrounding_gear) == 1
 					# move on
@@ -295,6 +316,7 @@ function iterate_through_data(arr)
 					for each in numbers_surrounding_gear
 						push!(nsg_split, split(each, ","))
 					end
+					
 					if length(numbers_surrounding_gear) == 2
 						nsg_split = []
 						for each in numbers_surrounding_gear
@@ -317,21 +339,31 @@ function iterate_through_data(arr)
 							parts_touching_gear =+ 2
 						end
 					else
-						
-						# its three or more chars touching gear. find out if it is actually two numbers
 						check_more_than_two = 0
+						# its three or more chars touching gear. find out if it is actually two numbers
+						
+						# nsg_split (in scope) has coordinates of touching parts
+
+						# not finished
+
+						
 						if check_more_than_two == 2
 							parts_touching_gear =+ 2
 						end
 					end
-					# do fancy stuff here
+					
 					if parts_touching_gear == 2
-						# - concatenate adjacent numbers
 						part_one = []
 						part_two = []
-						# more fancy stuff here
+						# - concatenate adjacent numbers
+
+						# unfinished here
+
+						# nsg_split (in scope) has coordinates of touching parts
+						
 						gear_ratio = parse(Int, join(part_one)) * parse(Int, join(part_two))
-						# - multiply the two and add the "gear ratio" to gear_ratios array
+						# - multiply the two and add the "gear ratio" to gear_ratios
+						# this part is done
 						push!(gear_ratios, gear_ratio)
 					end
 				end
@@ -372,6 +404,8 @@ println(twoddata)
 # ╠═686dd52b-ef14-4cf8-a840-31765961c4da
 # ╠═27257e61-fb5b-439f-a7c7-3dda915a1577
 # ╠═b6370896-5ddb-4eaa-874f-8468685adf2b
+# ╠═82307a84-4ec5-434f-af4d-8beb39462d54
+# ╠═e8cdc687-9aa4-4d80-b6ef-90aa431df2e7
 # ╠═77367ac4-9def-469b-a432-b5c2578d4304
 # ╠═3da43b43-ef54-48fa-b13f-82762035c05f
 # ╠═4d86a386-2d39-40e7-a0d2-06f8766d1d36
