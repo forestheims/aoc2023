@@ -244,6 +244,7 @@ end
 function iterate_through_data(arr)
 	x = []
 	numbers = []
+	gear_ratios = []
 	for i in 1:length(arr)
 		for j in 1:length(arr[i])
 			if is_number(i, j)
@@ -264,6 +265,30 @@ function iterate_through_data(arr)
 					end
 				end
 			end
+			################## Part 2 #############################
+			if arr[i][j] == "*"
+				gear_surrounding = check_surroundings(i, j)
+				numbers_surrounding_gear = []
+				for each in gear_surrounding
+					xy = split(each, ",")
+					xs = xy[1]
+					ys = xy[2]
+					if xs == 0 || xs == 141 || ys == 0 || ys == 141
+						# skip these
+					else
+						isnumber = is_number(xs, ys)
+						if isnumber
+							push!(numbers_surounding_gear, "$xs,$ys")
+						end
+					end
+					# accumulate the entire number sequence
+					# - find surrounding numbers
+					# - concatenate
+				end
+				# find out IF exactly two number sequences touch the gear
+				# if so multiply the two and add the "gear ratio" to gear_ratio array
+			end
+			################### end Part 2 ##########################
 			push!(x, "$i,$j")
 		end
 	end
@@ -274,12 +299,13 @@ function iterate_through_data(arr)
 		throw(error("not all elements were accounted for: only $lengthx "))
 	else
 		# println(x)
-		return numbers
+		return [numbers, gear_ratios]
 	end
 end
 
 # ╔═╡ 15062ef7-55c8-4220-b067-1aa0e34bdb28
-sum(iterate_through_data(twoddata))
+sum(iterate_through_data(twoddata)[1])
+# 531561 is correct! success on first attempt
 
 # ╔═╡ b637bbc8-e92e-4d21-ae09-401a18216475
 println(twoddata)
