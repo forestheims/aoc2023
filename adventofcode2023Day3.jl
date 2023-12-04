@@ -4,18 +4,26 @@
 using Markdown
 using InteractiveUtils
 
-# ╔═╡ b6370896-5ddb-4eaa-874f-8468685adf2b
-function iterate_through_data(arr)
-	x = 0
-	for row in arr
-		for el in row
-			x += 1
-		end
-	end
-	return x
+# ╔═╡ 24d0b901-cc34-4f61-8bad-67676e68a49e
+try
+	println(parse(Int, "3"))
+catch
+	println("errorrrrrrrrrrrrrrr")
 end
 
+# ╔═╡ 24ee78dc-706b-4b37-ac1f-9190777542c1
+try
+	parse(Int, "@")
+catch
+	println("errorrrrrrrrrrrrrrr")
+end
+
+# ╔═╡ 27257e61-fb5b-439f-a7c7-3dda915a1577
+# testing function - should return array of numbers that are valid
+# iterate_through_data(twoddata)
+
 # ╔═╡ 3da43b43-ef54-48fa-b13f-82762035c05f
+# returns an array of comma separated 2d array indexes of surrounding elements
 function check_surroundings(x, y)
 	surrounding = []
 	for dx in x-1:x+1
@@ -29,7 +37,11 @@ function check_surroundings(x, y)
 end
 
 # ╔═╡ 686dd52b-ef14-4cf8-a840-31765961c4da
+# testing function - should return an array of length 9
 check_surroundings(5,9)
+
+# ╔═╡ 6598f4bf-7d36-4040-99af-a26fdedbdfc9
+has_been_checked = []
 
 # ╔═╡ f584e5ae-923a-11ee-208a-f302a91587a7
 data = "................458...689.556..3............197......582........720.........................515..352..286.........670.741.....895.626.......
@@ -184,17 +196,106 @@ begin
 	end
 end
 
-# ╔═╡ 27257e61-fb5b-439f-a7c7-3dda915a1577
-iterate_through_data(twoddata)
+# ╔═╡ 4d86a386-2d39-40e7-a0d2-06f8766d1d36
+# returns true if an element is an Integer
+function is_number(x, y)
+	try
+		num = parse(Int, twoddata[x][y])
+		return true
+	catch
+		return false
+	end
+end
+
+# ╔═╡ 77367ac4-9def-469b-a432-b5c2578d4304
+function add_next_to_number_array(arr, row, num_seq, i, j, surrounding)
+	is_last = j == 140 || !is_number(i, j+1)
+	if is_last
+		push!(num_seq, arr[i][j])
+		surr = check_surroundings(i,j)
+		for each in surr
+			push!(surrounding, each)
+		end
+	else
+		push!(num_seq, arr[i][j])
+		surr = check_surroundings(i,j)
+		for each in surr
+			push!(surrounding, each)
+		end
+		add_next_to_number_array(arr, row, num_seq, i, j+1, surrounding)
+	end
+end
+
+# ╔═╡ b2f678f1-a55f-46de-ae55-b548107163c6
+# returns true if an element is not a period and is not an Integer
+function is_symbol(key)
+	splitkey = split(key, ",")
+	x = parse(Int, splitkey[1])
+	y = parse(Int, splitkey[2])
+	if x == 0 || x == 141 || y == 0 || y == 141
+		return false
+	else
+		return twoddata[x][y] != "." && !is_number(x, y)
+	end
+end
+
+# ╔═╡ b6370896-5ddb-4eaa-874f-8468685adf2b
+# iterates through every element of a 2d array !!! 140 by 140 !!!
+function iterate_through_data(arr)
+	x = []
+	numbers = []
+	for i in 1:length(arr)
+		for j in 1:length(arr[i])
+			if is_number(i, j)
+				is_first = j == 1 || !is_number(i, j-1)
+				if is_first
+					surrounding = check_surroundings(i, j)
+					number_sequence = [arr[i][j]]
+					if j != 140 && is_number(i, j+1)
+						add_next_to_number_array(arr, arr[i], number_sequence, i, j+1, surrounding)
+					end
+					unique_surrounding = unique(surrounding)
+					validation_array = []
+					for each in unique_surrounding
+						push!(validation_array, is_symbol(each))
+					end
+					if true in validation_array
+						push!(numbers, parse(Int, join(number_sequence)))
+					end
+				end
+			end
+			push!(x, "$i,$j")
+		end
+	end
+	println(numbers)
+	println(length(numbers))
+	if length(x) != 19600
+		lengthx = length(x)
+		throw(error("not all elements were accounted for: only $lengthx "))
+	else
+		# println(x)
+		return numbers
+	end
+end
+
+# ╔═╡ 15062ef7-55c8-4220-b067-1aa0e34bdb28
+sum(iterate_through_data(twoddata))
 
 # ╔═╡ b637bbc8-e92e-4d21-ae09-401a18216475
 println(twoddata)
 
 # ╔═╡ Cell order:
+# ╠═15062ef7-55c8-4220-b067-1aa0e34bdb28
+# ╠═24d0b901-cc34-4f61-8bad-67676e68a49e
+# ╠═24ee78dc-706b-4b37-ac1f-9190777542c1
 # ╠═686dd52b-ef14-4cf8-a840-31765961c4da
 # ╠═27257e61-fb5b-439f-a7c7-3dda915a1577
 # ╠═b6370896-5ddb-4eaa-874f-8468685adf2b
+# ╠═77367ac4-9def-469b-a432-b5c2578d4304
 # ╠═3da43b43-ef54-48fa-b13f-82762035c05f
+# ╠═4d86a386-2d39-40e7-a0d2-06f8766d1d36
+# ╠═b2f678f1-a55f-46de-ae55-b548107163c6
+# ╠═6598f4bf-7d36-4040-99af-a26fdedbdfc9
 # ╠═b637bbc8-e92e-4d21-ae09-401a18216475
 # ╠═bd6a47a6-0f90-45cf-8ab5-b26659cbcb0e
 # ╠═2ed5fcd5-aaaf-4be6-95a6-735d6e50d58d
