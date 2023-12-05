@@ -343,7 +343,7 @@ function iterate_through_data(arr)
 						# its three or more chars touching gear. find out if it is actually two numbers
 						
 						# nsg_split (in scope) has coordinates of touching parts
-
+						
 						# not finished
 
 						
